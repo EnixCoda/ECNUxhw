@@ -17,13 +17,13 @@ if (isset($reservations->$date)) {
 	echo json_encode(array(
 		"date" => $date,
 		"countReservations" => count($reservations->$date),
-		"limit" => 3,
+		"limit" => 5,
 	));
 } else {
 	echo json_encode(array(
 		"date" => $date,
 		"countReservations" => 0,
-		"limit" => 3,
+		"limit" => 5,
 	));
 }
 ?>

@@ -47,7 +47,7 @@ if ($endTime - $beginTime < 30) {
 	die();
 }
 
-$loginUrl = 'http://42.96.177.140:81/login.php';
+$loginUrl = 'http://202.120.82.2:8081/ClientWeb/pro/ajax/login.aspx';
 $data = array(
 	'id' => $request->stuID,
 	'pwd' => $request->stuPsw,
@@ -78,7 +78,7 @@ if (!isset($allReservations[$date])) {
 	$allReservations[$date] = [];
 }
 $reservations = $allReservations[$date];
-if (count($reservations) == 3) {
+if (count($reservations) == 5) {
 	$response = "FULL";
 } else {
 	$timeZones = [

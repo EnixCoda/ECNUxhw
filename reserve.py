@@ -7,7 +7,7 @@ import sys
 import multiprocessing
 import datetime
 
-debugging = True
+skipCountDown = True
 
 
 def formatted_current_time():
@@ -174,7 +174,7 @@ def time_cutter(date, start_time, end_time):
 def load_quests(reservation_file_name):
     quests = []
     days_ahead_for_medium_room = 4
-    days_ahead_for_small_room = 1
+    days_ahead_for_small_room = 2
     with open(reservation_file_name, 'r') as reservation_file:
         all_reservations = json.load(reservation_file)
         date4 = (datetime.date.today() + datetime.timedelta(days_ahead_for_medium_room)).strftime('%Y%m%d')
@@ -240,11 +240,10 @@ def main(reservation_file_name):
     while True:
         time.sleep(time_to_sleep)
         server_time = (datetime.datetime.now() + datetime.timedelta(minutes=-minute_adjust)).strftime("%H:%M")
-        if server_time == "23:59" or server_time == "24:00" or debugging:
+        if server_time == "23:55" or server_time == "23:56" or server_time == "23:57" or server_time == "23:58" or server_time == "23:59" or server_time[0:2] == "24" or server_time[0:2] == "00" or skipCountDown:
             break
     print "stop waiting, current time: %s" % (formatted_current_time())
 
-    # approaching midnight
     pool = multiprocessing.Pool(processes=len(reservations))
     pool.map(reserve, reservations)
     pool.close()

@@ -14,7 +14,7 @@ angular
   .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('warning-toast');
   });
-angular.module('App').controller('AppCtrl', function($scope, $http, $mdToast) {
+angular.module('App').controller('AppCtrl', function($scope, $http, $mdToast, $document) {
   $scope.reservation = {
     beginTime: {
       hour: undefined,
@@ -78,10 +78,10 @@ angular.module('App').controller('AppCtrl', function($scope, $http, $mdToast) {
     $mdToast.show(
       $mdToast.simple()
         .textContent(textC)
-        .position('bottom right')
+        .position('top right')
         .hideDelay(3000)
         .theme(type + "-toast")
-        .parent(angular.element(document.getElementById('mainPanel')))
+        .parent($document[0].querySelector('#mainPanel'))
     );
   }
   $scope.submit = function() {
