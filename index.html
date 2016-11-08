@@ -5,15 +5,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
   <title>中北图书馆的小黑屋</title>
-  <link rel="stylesheet" type="text/css" href="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.css">
+  <link rel="stylesheet" type="text/css" href="//ajax.proxy.ustclug.org/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.css">
   <style type="text/css">
     body,
     input {
       font-family: "黑体"
     }
 
-    body {
-      background-color: rgba(0,0,0,0.04);
+    [ng-cloak] {
+      display: none !important;
     }
 
     md-toast.md-success-toast-theme .md-toast-content {
@@ -35,9 +35,8 @@
     }
   </style>
 </head>
-
 <body ng-app="App" ng-controller='AppCtrl' ng-cloak>
-  <div layout="row" flex>
+  <div class="wallpaper" layout="row" flex>
     <div flex></div>
     <div style="max-width:600px" id="mainPanel">
       <md-card>
@@ -49,7 +48,6 @@
         </md-card-title>
         <md-card-content layout-padding>
           <div layout="column">
-            <h3 class="md-display-headline"></h3>
             <div layout-padding>
               <p class="md-subheader">选择房间类型</p>
               <md-radio-group ng-model="selectedRoomType" layout="row" layout-wrap>
@@ -177,9 +175,9 @@
     <div flex></div>
   </div>
 </body>
-<script type="text/javascript" src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
-<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
-<script src="//ajax.lug.ustc.edu.cn/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.js"></script>
+<script type="text/javascript" src="//ajax.proxy.ustclug.org/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="//ajax.proxy.ustclug.org/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+<script src="//ajax.proxy.ustclug.org/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
+<script src="//ajax.proxy.ustclug.org/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.js"></script>
 <script type="text/javascript" src="app.js"></script>
 </html>
