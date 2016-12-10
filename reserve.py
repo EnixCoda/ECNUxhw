@@ -1,17 +1,30 @@
-# -*- coding: utf-8 -*-
-import requests
+#coding: utf-8
+"""
+    read from reservations file, post reservations at midnight
+"""
 import json
 import random
 import time
 import sys
 import multiprocessing
 import datetime
+import requests
 
-skipCountDown = True
+SKIP_COUNT_DOWN = True
 
 
 def formatted_current_time():
+    """
+        return time like '23:59:49'
+    """
     return datetime.datetime.now().strftime('%X')
+
+
+def print_current_time():
+    """
+        print time from formatted_current_time
+    """
+    print 'current time: %s' % (formatted_current_time())
 
 
 def combine_dicts(dict1, dict2):
@@ -29,6 +42,7 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
             if 'ret' in login_response_content and login_response_content['ret'] == 1:
                 return True
             else:
+                print response.content
                 print "login fail:"
                 print login_info['id'], login_info['pwd']
                 return False
@@ -90,24 +104,29 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
     (_, _, _, _, _, last_second, _, _, _) = time.localtime()
     while True:
         try:
-            response_content = json.loads(poster.get(reserve_url, params=reserve_data, timeout=5).content)
+            response_content = json.loads(\
+                poster.get(reserve_url, params=reserve_data, timeout=5).content\
+            )
             if 'ret' in response_content:
                 while True:
                     if response_content['ret'] == 1:
-                        print 'reserve %s from %s to %s succeeded. current time: %s' % (
-                            room, time_data['start'], time_data['end'], formatted_current_time())
+                        print 'reserve %s from %s to %s succeeded.' % \
+                            (room, time_data['start'], time_data['end'])
+                        print_current_time()
                         return
-                    if u"预约与现有预约冲突" == response_content['msg'][10:]:
-                        print 'reserve %s from %s to %s conflicted. current time: %s' % (
-                            room, time_data['start'], time_data['end'], formatted_current_time())
+                    if response_content['msg'][10:] == u"预约与现有预约冲突":
+                        print 'reserve %s from %s to %s conflicted.' % \
+                            (room, time_data['start'], time_data['end'])
+                        print_current_time()
                         return
-                    if u"最少需5人同时使用" == response_content['msg'][10:]:
-                        print 'reserve %s from %s to %s failed, invalid reserver existing. current time: %s' % (
-                            room, time_data['start'], time_data['end'], formatted_current_time())
+                    if response_content['msg'][10:] == u"最少需5人同时使用":
+                        print 'reserve %s from %s to %s failed, invalid reserver existing.' % \
+                            (room, time_data['start'], time_data['end'])
+                        print_current_time()
                         return
-                    if u"只能提前[1]天预约" == response_content['msg'][10:]:
+                    if response_content['msg'][10:] == u"只能提前[1]天预约":
                         break
-                    if u"只能提前[3]天预约" == response_content['msg'][10:]:
+                    if response_content['msg'][10:] == u"只能提前[3]天预约":
                         break
                     print 'unexpected response, undefined situation:'
                     print json.dumps(response_content)
@@ -171,19 +190,21 @@ def time_cutter(date, start_time, end_time):
     return times
 
 
+
+
 def load_quests(reservation_file_name):
+    DAYS_AHEAD_FOR_MEDIUM_ROOM = 4
+    DAYS_AHEAD_FOR_SMALL_ROOM = 2
     quests = []
-    days_ahead_for_medium_room = 4
-    days_ahead_for_small_room = 2
     with open(reservation_file_name, 'r') as reservation_file:
         all_reservations = json.load(reservation_file)
-        date4 = (datetime.date.today() + datetime.timedelta(days_ahead_for_medium_room)).strftime('%Y%m%d')
+        date4 = (datetime.date.today() + datetime.timedelta(DAYS_AHEAD_FOR_MEDIUM_ROOM)).strftime('%Y%m%d')
         if date4 in all_reservations:
             reservations = all_reservations[date4]
             for reservation in reservations:
                 if reservation["roomType"] == "medium":
                     quests.append(reservation)
-        date2 = (datetime.date.today() + datetime.timedelta(days_ahead_for_small_room)).strftime('%Y%m%d')
+        date2 = (datetime.date.today() + datetime.timedelta(DAYS_AHEAD_FOR_SMALL_ROOM)).strftime('%Y%m%d')
         if date2 in all_reservations:
             reservations = all_reservations[date2]
             for reservation in reservations:
@@ -194,10 +215,10 @@ def load_quests(reservation_file_name):
 
 def get_minute_adjust():
     minute_adjust = 0
-    homepage_url="http://202.120.82.2:8081/ClientWeb/xcus/ic2/Default.aspx"
+    homepage_url = "http://202.120.82.2:8081/ClientWeb/xcus/ic2/Default.aspx"
     response = requests.get(homepage_url)
     date = response.headers['Date']
-    datetime_object = datetime.datetime.strptime(date,'%a, %d %b %Y %X %Z')
+    datetime_object = datetime.datetime.strptime(date, '%a, %d %b %Y %X %Z')
     if date[-3:] == "GMT":
         datetime_object += datetime.timedelta(hours=8)
         minute_adjust = int((datetime.datetime.now() - datetime_object).seconds / 60)
@@ -220,7 +241,8 @@ def main(reservation_file_name):
 
         print 'time divide:'
         for x in range(len(times)):
-            print '%s reserves %s from %s to %s' % (quest['stuID'], quest['room'], times[x]['start'], times[x]['end'])
+            print '%s reserves %s from %s to %s' % \
+                (quest['stuID'], quest['room'], times[x]['start'], times[x]['end'])
             reservation = (
                 extract_login_info_from(quest),
                 quest["roomType"],
@@ -239,8 +261,16 @@ def main(reservation_file_name):
     print "start waiting, current time: %s" % (formatted_current_time())
     while True:
         time.sleep(time_to_sleep)
-        server_time = (datetime.datetime.now() + datetime.timedelta(minutes=-minute_adjust)).strftime("%H:%M")
-        if server_time == "23:55" or server_time == "23:56" or server_time == "23:57" or server_time == "23:58" or server_time == "23:59" or server_time[0:2] == "24" or server_time[0:2] == "00" or skipCountDown:
+        server_time = datetime.datetime.now() + datetime.timedelta(minutes=-minute_adjust)
+        server_time = server_time.strftime("%H:%M")
+        if server_time == "23:55" \
+            or server_time == "23:56" \
+            or server_time == "23:57" \
+            or server_time == "23:58" \
+            or server_time == "23:59" \
+            or server_time[0:2] == "24" \
+            or server_time[0:2] == "00" \
+            or SKIP_COUNT_DOWN:
             break
     print "stop waiting, current time: %s" % (formatted_current_time())
 
@@ -252,8 +282,8 @@ def main(reservation_file_name):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        reservation_file_name = sys.argv[1]
+        RESERVATION_FILE_NAME = sys.argv[1]
     else:
-        reservation_file_name = "reservations"
-    main(reservation_file_name)
+        RESERVATION_FILE_NAME = "reservations"
+    main(RESERVATION_FILE_NAME)
     print 'program done'
