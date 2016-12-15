@@ -175,6 +175,7 @@ def format_time(date, start_time, end_time):
 
 
 def time_cutter(date, start_time, end_time):
+    # TODO: fix calc bug, e.g. 1000 - 950 = 50 > 30
     TIME_LIMIT = 400
     reserve_time_length = end_time - start_time
     cur_start_time = start_time
