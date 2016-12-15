@@ -4,26 +4,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
-  <title>中北图书馆的小黑屋</title>
-  <link rel="stylesheet" type="text/css" href="//ajax.proxy.ustclug.org/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.css">
+  <title>小黑屋</title>
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.css">
   <style type="text/css">
     body,
     input {
       font-family: "黑体"
     }
-
     [ng-cloak] {
       display: none !important;
     }
-
     md-toast.md-success-toast-theme .md-toast-content {
       background-color: #4caf50;
     }
-
     md-toast.md-error-toast-theme .md-toast-content {
       background-color: #f44336;
     }
-
     md-toast.md-warning-toast-theme .md-toast-content {
       background-color: #40c4ff;
     }
@@ -33,151 +29,153 @@
     .md-subheader {
       background: #fff;
     }
+    #main-panel {
+      max-width: 480px;
+      margin: 4px;
+    }
+    md-radio-button ._md-label {
+      margin-left: 20px;
+    }
   </style>
 </head>
-<body ng-app="App" ng-controller='AppCtrl' ng-cloak>
-  <div class="wallpaper" layout="row" flex>
-    <div flex></div>
-    <div style="max-width:600px" id="mainPanel">
-      <md-card>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">你要去小黑屋吗？</span>
-            <span class="md-subhead">小黑屋,屋屋屋屋屋~</span>
-          </md-card-title-text>
-        </md-card-title>
-        <md-card-content layout-padding>
-          <div layout="column">
-            <div layout-padding>
-              <p class="md-subheader">选择房间类型</p>
-              <md-radio-group ng-model="selectedRoomType" layout="row" layout-wrap>
-                <md-radio-button layout-padding ng-repeat="roomType in roomTypes" value="{{roomType.e}}">
-                  {{roomType.c}}
-                </md-radio-button>
-              </md-radio-group>
-            </div>
-            <md-divider class="md-margin"></md-divider>
-            <div layout="row" layout-xs="column" layout-align="space-around center">
-              <div flex layout="row" layout-align="center center">
-                <md-datepicker ng-model="reservation.date" md-placeholder="日期" md-min-date="theDayAfterTomorrow" md-max-date="nextMonthsToday" ng-change="checkReservations()">
-                </md-datepicker>
-              </div>
-              <div flex>
-                <p ng-show="reserveLimit >= 0 && reservesOnDate >= 0">
-                  当日预约使用量<b>{{reservesOnDate}}/{{reserveLimit}}</b>
-                </p>
-              </div>
-            </div>
-            <md-divider class="md-margin"></md-divider>
-            <div layout="row" layout-xs="column" layout-align="space-around center">
-              <div>
-                <md-input-container>
-                  <label>房间</label>
-                  <md-select ng-disabled="selectedRoomType == undefined" ng-model="reservation.room">
-                    <md-option ng-repeat="room in rooms[selectedRoomType]" value="{{room}}">
-                      {{room}}
-                    </md-option>
-                  </md-select>
-                </md-input-container>
-              </div>
-              <div layout="column">
-                <div flex layout="row" layout-align="center center">
-                  <md-subheader>起始时间</md-subheader>
-                  <div layout="row">
-                    <div>
-                      <md-input-container>
-                        <label>时</label>
-                        <md-select ng-model="reservation.beginTime.hour">
-                          <md-option ng-repeat="hour in hours" value="{{hour}}">
-                            {{hour}}
-                          </md-option>
-                        </md-select>
-                      </md-input-container>
-                    </div>
-                    <div>
-                      <md-input-container>
-                        <label>分</label>
-                        <md-select ng-model="reservation.beginTime.minute">
-                          <md-option ng-repeat="minute in minutes" value="{{minute}}">
-                            {{minute}}
-                          </md-option>
-                        </md-select>
-                      </md-input-container>
-                    </div>
-                  </div>
-                </div>
-                <div flex layout="row" layout-align="center center">
-                  <md-subheader>结束时间</md-subheader>
-                  <div layout="row">
-                    <div>
-                      <md-input-container>
-                        <label>时</label>
-                        <md-select ng-model="reservation.endTime.hour">
-                          <md-option ng-repeat="hour in hours" value="{{hour}}">
-                            {{hour}}
-                          </md-option>
-                        </md-select>
-                      </md-input-container>
-                    </div>
-                    <div>
-                      <md-input-container>
-                        <label>分</label>
-                        <md-select ng-model="reservation.endTime.minute">
-                          <md-option ng-repeat="minute in minutes" value="{{minute}}">
-                            {{minute}}
-                          </md-option>
-                        </md-select>
-                      </md-input-container>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <md-divider class="md-margin"></md-divider>
-            <div layout="row" layout-wrap layout-padding>
-              <md-input-container>
-                <label>学号</label>
-                <input type="text" ng-model="reservation.stuID">
-              </md-input-container>
-              <md-input-container>
-                <label>密码</label>
-                <input type="password" ng-model="reservation.stuPsw">
-              </md-input-container>
-            </div>
-            <md-divider class="md-margin" ng-if="selectedRoomType=='medium'"></md-divider>
-            <div ng-if="selectedRoomType=='medium'" layout="row" layout-wrap layout-padding>
-              <md-input-container>
-                <label>其他学号</label>
-                <input type="text" ng-model="reservation.stuID1">
-              </md-input-container>
-              <md-input-container>
-                <label>其他学号</label>
-                <input type="text" ng-model="reservation.stuID2">
-              </md-input-container>
-            </div>
-            <div ng-if="selectedRoomType=='medium'" layout="row" layout-wrap layout-padding>
-              <md-input-container>
-                <label>其他学号</label>
-                <input type="text" ng-model="reservation.stuID3">
-              </md-input-container>
-              <md-input-container>
-                <label>其他学号</label>
-                <input type="text" ng-model="reservation.stuID4">
-              </md-input-container>
-            </div>
-            <md-button class="md-raised md-primary" flex ng-disabled="false" ng-click="submit()">
-              预约
-            </md-button>
+<body ng-app="ECNUxhw" ng-controller='ECNUxhwCtrl' ng-cloak class="wallpaper" layout="row" flex>
+<div flex></div>
+<div id="main-panel-wrapper">
+  <md-card id="main-panel">
+    <md-card-title>
+      <md-card-title-text>
+        <span class="md-headline">你要去小黑屋吗？</span>
+        <span class="md-subhead">支持中北校区图书馆4楼的私人空间预约，可一次性预约4个小时以上，请尽量一次性预约连续的时间段，勿占用多个预约机会。</span>
+      </md-card-title-text>
+    </md-card-title>
+    <md-card-content layout-padding>
+      <div layout="column">
+        <div layout-padding>
+          <p class="md-subheader">选择房间类型</p>
+          <md-radio-group ng-model="selectedRoomType" layout="row" layout-wrap>
+            <md-radio-button layout-padding ng-repeat="roomType in roomTypes" value="{{roomType.en}}">
+              {{roomType.zh}}
+            </md-radio-button>
+          </md-radio-group>
+        </div>
+        <md-divider class="md-margin"></md-divider>
+        <div layout="row" layout-xs="column" layout-align="space-around center">
+          <div flex layout="row" layout-align="center center">
+            <md-datepicker ng-model="reservation.date" md-placeholder="日期" md-min-date="theDayAfterTomorrow" md-max-date="nextMonthsToday" ng-change="checkReservations()">
+            </md-datepicker>
           </div>
-        </md-card-content>
-        <md-card>
-    </div>
-    <div flex></div>
-  </div>
-</body>
-<script type="text/javascript" src="//ajax.proxy.ustclug.org/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-<script src="//ajax.proxy.ustclug.org/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
-<script src="//ajax.proxy.ustclug.org/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
-<script src="//ajax.proxy.ustclug.org/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.js"></script>
+          <div flex>
+            <md-subheader ng-show="reserveLimit >= 0 && reservesOnDate >= 0" ng-bind="'当日预约使用量' + reservesOnDate + '/' + reserveLimit"></md-subheader>
+          </div>
+        </div>
+        <md-divider class="md-margin"></md-divider>
+        <div layout="row" layout-xs="column" layout-align="space-around center">
+          <div>
+            <md-input-container>
+              <label>房间</label>
+              <md-select ng-disabled="!selectedRoomType" ng-model="reservation.room">
+                <md-option ng-repeat="room in rooms[selectedRoomType]" value="{{room}}">
+                  {{room}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+          <div layout="column">
+            <div flex layout="row" layout-align="center center">
+              <md-subheader>起始时间</md-subheader>
+              <div layout="row">
+                <div>
+                  <md-input-container>
+                    <label>时</label>
+                    <md-select ng-model="reservation.beginTime.hour">
+                      <md-option ng-repeat="hour in hours" value="{{hour}}">
+                        {{hour}}
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                </div>
+                <div>
+                  <md-input-container>
+                    <label>分</label>
+                    <md-select ng-model="reservation.beginTime.minute">
+                      <md-option ng-repeat="minute in minutes" value="{{minute}}">
+                        {{minute}}
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                </div>
+              </div>
+            </div>
+            <div flex layout="row" layout-align="center center">
+              <md-subheader>结束时间</md-subheader>
+              <div layout="row">
+                <div>
+                  <md-input-container>
+                    <label>时</label>
+                    <md-select ng-model="reservation.endTime.hour">
+                      <md-option ng-repeat="hour in hours" value="{{hour}}">
+                        {{hour}}
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                </div>
+                <div>
+                  <md-input-container>
+                    <label>分</label>
+                    <md-select ng-model="reservation.endTime.minute">
+                      <md-option ng-repeat="minute in minutes" value="{{minute}}">
+                        {{minute}}
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <md-divider class="md-margin"></md-divider>
+        <div layout="row" layout-wrap layout-padding layout-align="space-between center">
+          <md-input-container>
+            <label>学号</label>
+            <input type="text" ng-model="reservation.stuID">
+          </md-input-container>
+          <md-input-container>
+            <label>密码</label>
+            <input type="password" ng-model="reservation.stuPsw">
+          </md-input-container>
+        </div>
+        <md-divider class="md-margin" ng-if="selectedRoomType=='medium'"></md-divider>
+        <div ng-if="selectedRoomType=='medium'" layout="row" layout-wrap layout-padding layout-align="space-between center">
+          <md-input-container>
+            <label>其他学号</label>
+            <input type="text" ng-model="reservation.stuID1">
+          </md-input-container>
+          <md-input-container>
+            <label>其他学号</label>
+            <input type="text" ng-model="reservation.stuID2">
+          </md-input-container>
+        </div>
+        <div ng-if="selectedRoomType=='medium'" layout="row" layout-wrap layout-padding layout-align="space-between center">
+          <md-input-container>
+            <label>其他学号</label>
+            <input type="text" ng-model="reservation.stuID3">
+          </md-input-container>
+          <md-input-container>
+            <label>其他学号</label>
+            <input type="text" ng-model="reservation.stuID4">
+          </md-input-container>
+        </div>
+        <md-button class="md-raised md-primary" flex ng-disabled="requesting" ng-click="validateForm()" ng-bind="requesting ? '请稍候' : '登记预约'">
+        </md-button>
+      </div>
+    </md-card-content>
+  </md-card>
+</div>
+<div flex></div>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-aria.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc4/angular-material.min.js"></script>
 <script type="text/javascript" src="app.js"></script>
+</body>
 </html>
