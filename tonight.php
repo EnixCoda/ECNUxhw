@@ -13,5 +13,6 @@ if (isset($reservations[$fourDaysLater])) {
 	$push[$fourDaysLater] = $reservations[$fourDaysLater];
 }
 
-echo json_encode($push);
+header('Content-type: application/json');
+echo json_encode($push, JSON_PRETTY_PRINT);
 ?>
