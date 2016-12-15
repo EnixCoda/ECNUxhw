@@ -1,5 +1,5 @@
 <?php
-$postdata = file_get_contents("php://input");
+$postdata = file_get_contents('php://input');
 $request = json_decode($postdata);
 
 $stuID     = $request->stuID;
@@ -10,39 +10,39 @@ $beginTime = $request->beginTime;
 $endTime   = $request->endTime;
 $followers = $request->followers;
 $roomType  = $request->roomType;
-$response  = "";
+$response  = '';
 
 if (!preg_match('/^\d{11}$/', $stuID)) {
-	$response = "INFO_ERROR";
+	$response = 'INFO_ERROR';
 	echo json_encode($response);
 	die();
 }
 if ($roomType == 'medium') {
 	foreach ($followers as $follower) {
 		if (!preg_match('/^\d{11}$/', $follower)) {
-			$response = "INFO_ERROR";
+			$response = 'INFO_ERROR';
 			echo json_encode($response);
 			die();
 		}
 	}
 }
 if (strval(intval($date)) != $date) {
-	$response = "INFO_ERROR";
+	$response = 'INFO_ERROR';
 	echo json_encode($response);
 	die();
 }
 if ($beginTime < 800 || $beginTime > 2130) {
-	$response = "INFO_ERROR";
+	$response = 'INFO_ERROR';
 	echo json_encode($response);
 	die();
 }
 if ($endTime < 830 || $endTime > 2200) {
-	$response = "INFO_ERROR";
+	$response = 'INFO_ERROR';
 	echo json_encode($response);
 	die();
 }
 if ($endTime - $beginTime < 30) {
-	$response = "INFO_ERROR";
+	$response = 'INFO_ERROR';
 	echo json_encode($response);
 	die();
 }
@@ -57,7 +57,7 @@ $data = array(
 // use key 'http' even if you send the request to https://...
 $options = array(
     'http' => array(
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'header'  => 'Content-type: application/x-www-form-urlencoded\r\n',
         'method'  => 'POST',
         'content' => http_build_query($data),
     ),
@@ -65,11 +65,11 @@ $options = array(
 $context  = stream_context_create($options);
 
 $result = file_get_contents($loginUrl, false, $context);
-if ($result === FALSE) { die("CONNECTION ERROR"); }
+if ($result === FALSE) { die('CONNECTION ERROR'); }
 else {
 	$data = json_decode($result, true);
-	if ($data["ret"] == 0) {
-		die("LOGIN FAIL");
+	if ($data['ret'] == 0) {
+		die('LOGIN FAIL');
 	}
 }
 
@@ -79,15 +79,15 @@ if (!isset($allReservations[$date])) {
 }
 $reservations = $allReservations[$date];
 if (count($reservations) == 5) {
-	$response = "FULL";
+	$response = 'FULL';
 } else {
 	$timeZones = [
-	// "C413": [[0800, 0900], [0900, 2200]]
+	// 'C413': [[0800, 0900], [0900, 2200]]
 	];
 	$conflict = false;
 	foreach ($reservations as $_ => $reservation) {
-		if ($reservation["room"] == $room) {
-			array_push($timeZones, [intval($reservation["beginTime"]), intval($reservation["endTime"])]);
+		if ($reservation['room'] == $room) {
+			array_push($timeZones, [intval($reservation['beginTime']), intval($reservation['endTime'])]);
 		}
 	}
 	foreach ($timeZones as $timeZone) {
@@ -101,18 +101,18 @@ if (count($reservations) == 5) {
 	}
 	if (!$conflict) {
 		array_push($allReservations[$date], array(
-			"stuID"     => $request->stuID,
-			"stuPsw"    => $request->stuPsw,
-			"room"      => $request->room,
-			"date"      => $request->date,
-			"beginTime" => $request->beginTime,
-			"endTime"   => $request->endTime,
-			"followers" => $request->followers,
-			"roomType"  => $request->roomType
+			'stuID'     => $request->stuID,
+			'stuPsw'    => $request->stuPsw,
+			'room'      => $request->room,
+			'date'      => $request->date,
+			'beginTime' => $request->beginTime,
+			'endTime'   => $request->endTime,
+			'followers' => $request->followers,
+			'roomType'  => $request->roomType
 		));
-		$response = "SUCCESS";
+		$response = 'SUCCESS';
 	} else {
-		$response = "CONFLICT";
+		$response = 'CONFLICT';
 	}
 }
 echo $response;
