@@ -16,10 +16,12 @@ angular
   });
 
 angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdToast, $window) {
-  $scope.reservation = {
+  var reservation = {
     beginTime: { hour: undefined, minute: undefined },
     endTime: { hour: undefined, minute: undefined }
   };
+
+  $scope.reservation = reservation;
 
   $scope.roomTypes = [
     { zh: '木门', en: 'wood' }, 
@@ -77,7 +79,6 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
   }
 
   $scope.validateForm = function() {
-    var reservation = $scope.reservation;
     try {
       if (! $scope.selectedRoomType) throw 'roomType';
       if (! reservation.room) throw 'room';
