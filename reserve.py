@@ -247,12 +247,15 @@ def main():
         for index in range(times_length):
             print '%s reserves %s from %s to %s' % \
                 (quest['stuID'], quest['room'], times[index]['start'], times[index]['end'])
+            followers_str = ''
+            if 'followers' in quest:
+                followers_str = ','.join(quest['followers'])
             reservation = (
                 extract_login_info_from(quest),
                 quest['roomType'],
                 quest['room'],
                 times[index],
-                ','.join(quest['followers'])
+                followers_str
             )
             reservations.append(reservation)
 
