@@ -248,7 +248,7 @@ def main():
             print '%s reserves %s from %s to %s' % \
                 (quest['stuID'], quest['room'], times[index]['start'], times[index]['end'])
             followers_str = ''
-            if 'followers' in quest:
+            if 'followers' in quest and quest['followers'] is not None:
                 followers_str = ','.join(quest['followers'])
             reservation = (
                 extract_login_info_from(quest),
