@@ -175,18 +175,27 @@ def format_time(date, start_time, end_time):
 
 
 def time_cutter(date, start_time, end_time):
-    # TODO: fix calc bug, e.g. 1000 - 950 = 50 > 30
-    TIME_LIMIT = 400
-    reserve_time_length = end_time - start_time
+    TIME_BLOCK_UNIT = 30
+    TIME_LIMIT_RAW = 400
+    TIME_LIMIT = TIME_LIMIT_RAW / 100 * 60
+    reserve_time_length = end_time - start_time - (int(end_time / 100) - int(start_time / 100)) * 40
     cur_start_time = start_time
-    cur_end_time = start_time + max(((reserve_time_length - 1) % TIME_LIMIT + 1), 30)
     times = []
-    while True:
+    while reserve_time_length >= TIME_BLOCK_UNIT:
+        time_buffer = 0
+        while time_buffer < TIME_LIMIT and reserve_time_length > 0:
+            if time_buffer + TIME_BLOCK_UNIT == TIME_LIMIT \
+                and reserve_time_length - TIME_BLOCK_UNIT < TIME_BLOCK_UNIT \
+                and reserve_time_length - TIME_BLOCK_UNIT > 0:
+                break
+            time_block = min(reserve_time_length, TIME_BLOCK_UNIT)
+            time_buffer += time_block
+            reserve_time_length -= time_block
+        cur_end_time = cur_start_time + int(time_buffer / 60) * 100 + (time_buffer % 60)
+        if cur_end_time % 100 >= 60 or cur_start_time % 100 + time_buffer % 100 == 100:
+            cur_end_time += 40
         times.append(format_time(date, cur_start_time, cur_end_time))
         cur_start_time = cur_end_time
-        cur_end_time += (end_time - cur_end_time - 1) % TIME_LIMIT + 1
-        if cur_start_time >= end_time:
-            break
     return times
 
 
