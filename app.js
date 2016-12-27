@@ -4,15 +4,9 @@ angular
     $mdThemingProvider.theme('default')
       .primaryPalette('blue')
       .accentPalette('orange');
-  })
-  .config(function ($mdThemingProvider) {
-    $mdThemingProvider.theme('error-toast');
-  })
-  .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('success-toast');
-  })
-  .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('warning-toast');
+    $mdThemingProvider.theme('error-toast');
   });
 
 angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdToast, $window) {
@@ -24,8 +18,8 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
   $scope.reservation = reservation;
 
   $scope.roomTypes = [
-    { zh: '木门', en: 'wood' }, 
-    { zh: '玻璃门', en: 'glass' }, 
+    { zh: '木门', en: 'wood' },
+    { zh: '玻璃门', en: 'glass' },
     { zh: '中型讨论室', en: 'medium' }
   ];
 
@@ -86,9 +80,7 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
       if (! reservation.date) throw 'date';
       if (! reservation.beginTime.hour || ! reservation.beginTime.minute) throw 'beginTime';
       if (! reservation.endTime.hour || ! reservation.endTime.minute) throw 'endTime';
-      if (! (reservation.endTime.hour - reservation.beginTime.hour) * 100 + reservation.endTime.minute - reservation.beginTime.minute >= 30) {
-        throw 'short';
-      }
+      if (! (reservation.endTime.hour - reservation.beginTime.hour) * 100 + reservation.endTime.minute - reservation.beginTime.minute >= 30) throw 'short';
       if (!reservation.stuID) throw 'stuID';
       if (!reservation.stuID.trim().match(/^\d{11}$/)) throw 'stuIdformatMismatch';
       if (!reservation.stuPsw) throw 'stuPsw';

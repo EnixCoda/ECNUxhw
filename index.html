@@ -30,9 +30,18 @@
       background: #fff;
     }
     #main-panel {
-      max-width: 480px;
+      max-width: 420px;
       margin: 4px;
     }
+    @media (min-width: 960px) {
+      md-toast {
+        position: fixed;
+        top: 0;
+        right: 50% !important;
+        transform: translateX(100%);
+      }
+    }
+    /* reduce distance between room radio and label */
     md-radio-button ._md-label {
       margin-left: 20px;
     }
@@ -61,8 +70,7 @@
         <md-divider class="md-margin"></md-divider>
         <div layout="row" layout-xs="column" layout-align="space-around center">
           <div flex layout="row" layout-align="center center">
-            <md-datepicker ng-model="reservation.date" md-placeholder="日期" md-min-date="theDayAfterTomorrow" md-max-date="nextMonthsToday" ng-change="checkReservations()">
-            </md-datepicker>
+            <md-datepicker name="reserveDate" ng-model="reservation.date" md-placeholder="日期" md-min-date="theDayAfterTomorrow" md-max-date="nextMonthsToday" ng-change="checkReservations()"></md-datepicker>
           </div>
           <div flex>
             <md-subheader ng-show="reserveLimit >= 0 && reservesOnDate >= 0" ng-bind="'当日预约使用量' + reservesOnDate + '/' + reserveLimit"></md-subheader>
