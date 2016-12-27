@@ -42,8 +42,19 @@
       }
     }
     /* reduce distance between room radio and label */
-    md-radio-button ._md-label {
-      margin-left: 20px;
+    md-radio-button .md-label {
+      margin-left: 16px;
+    }
+    .md-datepicker-triangle-button {
+      top: 0;
+    }
+    .layout-padding {
+      padding: 4px;
+    }
+    .reserve-hint {
+      text-align: center;
+      font-size: 14px;
+      color: #999;
     }
   </style>
 </head>
@@ -68,12 +79,12 @@
           </md-radio-group>
         </div>
         <md-divider class="md-margin"></md-divider>
-        <div layout="row" layout-xs="column" layout-align="space-around center">
+        <div layout="row" layout-xs="column" layout-align="space-between center">
           <div flex layout="row" layout-align="center center">
             <md-datepicker name="reserveDate" ng-model="reservation.date" md-placeholder="日期" md-min-date="theDayAfterTomorrow" md-max-date="nextMonthsToday" ng-change="checkReservations()"></md-datepicker>
           </div>
-          <div flex>
-            <md-subheader ng-show="reserveLimit >= 0 && reservesOnDate >= 0" ng-bind="'当日预约使用量' + reservesOnDate + '/' + reserveLimit"></md-subheader>
+          <div flex class="reserve-hint">
+            <span ng-show="reserveLimit >= 0 && reservesOnDate >= 0" ng-bind="'当日预约使用量' + reservesOnDate + '/' + reserveLimit"></span>
           </div>
         </div>
         <md-divider class="md-margin"></md-divider>
