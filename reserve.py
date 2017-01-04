@@ -36,18 +36,19 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
     def login(session):
         # user login
         LOGIN_URL = 'http://202.120.82.2:8081/ClientWeb/pro/ajax/login.aspx'
-        try:
-            response = session.get(LOGIN_URL, params=login_info, timeout=5)
-            login_response_content = json.loads(response.content)
-            if 'ret' in login_response_content and login_response_content['ret'] == 1:
-                return True
-            else:
-                print response.content
-                print 'login failed:', login_info['id'], login_info['pwd']
-                return False
-        except Exception, error:
-            print error
-            return False
+        while True:
+            try:
+                response = session.get(LOGIN_URL, params=login_info, timeout=5)
+                login_response_content = json.loads(response.content)
+                if 'ret' in login_response_content and login_response_content['ret'] == 1:
+                    return True
+                else:
+                    print response.content
+                    print 'login failed:', login_info['id'], login_info['pwd']
+                    return False
+            except Exception, error:
+                print error
+                time.sleep(5)
 
     poster = requests.session()
     if not login(poster):
