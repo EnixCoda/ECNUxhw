@@ -80,7 +80,7 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
       if (! reservation.date) throw 'date';
       if (! reservation.beginTime.hour || ! reservation.beginTime.minute) throw 'beginTime';
       if (! reservation.endTime.hour || ! reservation.endTime.minute) throw 'endTime';
-      if (! (reservation.endTime.hour - reservation.beginTime.hour) * 100 + reservation.endTime.minute - reservation.beginTime.minute >= 30) throw 'short';
+      if (! ((reservation.endTime.hour - reservation.beginTime.hour) * 60 + reservation.endTime.minute - reservation.beginTime.minute >= 30)) throw 'short';
       if (!reservation.stuID) throw 'stuID';
       if (!reservation.stuID.trim().match(/^\d{11}$/)) throw 'stuIdformatMismatch';
       if (!reservation.stuPsw) throw 'stuPsw';
@@ -181,6 +181,7 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
           case 'NO CREDIT':
             type = 'error';
             textContent = '违约次数过多，信用度不足'
+            break
           case 'INFO_ERROR':
             throw '';
           default:
