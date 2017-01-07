@@ -178,6 +178,9 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
             type = 'error';
             textContent = '当日登记已满';
             break;
+          case 'NO CREDIT':
+            type = 'error';
+            textContent = '违约次数过多，信用度不足'
           case 'INFO_ERROR':
             throw '';
           default:

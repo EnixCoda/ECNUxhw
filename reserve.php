@@ -17,7 +17,7 @@ if (!preg_match('/^\d{11}$/', $stuID)) {
 	echo json_encode($response);
 	die();
 }
-if ($roomType == 'medium') {
+if ($roomType === 'medium') {
 	foreach ($followers as $follower) {
 		if (!preg_match('/^\d{11}$/', $follower)) {
 			$response = 'INFO_ERROR';
@@ -26,7 +26,7 @@ if ($roomType == 'medium') {
 		}
 	}
 }
-if (strval(intval($date)) != $date) {
+if (strval(intval($date)) !== $date) {
 	$response = 'INFO_ERROR';
 	echo json_encode($response);
 	die();
@@ -52,15 +52,15 @@ $data = array(
 	'id' => $request->stuID,
 	'pwd' => $request->stuPsw,
 	'act' => 'login'
-	);
+);
 
 // use key 'http' even if you send the request to https://...
 $options = array(
-    'http' => array(
-        'header'  => 'Content-type: application/x-www-form-urlencoded\r\n',
-        'method'  => 'POST',
-        'content' => http_build_query($data),
-    ),
+	'http' => array(
+		'header'  => 'Content-type: application/x-www-form-urlencoded\r\n',
+		'method'  => 'POST',
+		'content' => http_build_query($data),
+	),
 );
 $context  = stream_context_create($options);
 
@@ -68,8 +68,13 @@ $result = file_get_contents($loginUrl, false, $context);
 if ($result === FALSE) { die('CONNECTION ERROR'); }
 else {
 	$data = json_decode($result, true);
-	if ($data['ret'] == 0) {
+	if ($data['ret'] === 0) {
 		die('LOGIN FAIL');
+	} else {
+		$credit = $data['data']['credit'][0];
+		if ($credit[1] === '0') {
+			die('NO CREDIT');
+		}
 	}
 }
 
@@ -78,7 +83,7 @@ if (!isset($allReservations[$date])) {
 	$allReservations[$date] = [];
 }
 $reservations = $allReservations[$date];
-if (count($reservations) == 5) {
+if (count($reservations) === 5) {
 	$response = 'FULL';
 } else {
 	$timeZones = [
@@ -86,7 +91,7 @@ if (count($reservations) == 5) {
 	];
 	$conflict = false;
 	foreach ($reservations as $_ => $reservation) {
-		if ($reservation['room'] == $room) {
+		if ($reservation['room'] === $room) {
 			array_push($timeZones, [intval($reservation['beginTime']), intval($reservation['endTime'])]);
 		}
 	}
@@ -111,10 +116,9 @@ if (count($reservations) == 5) {
 			'roomType'  => $request->roomType
 		));
 		$response = 'SUCCESS';
+		file_put_contents('reservations', json_encode($allReservations));
 	} else {
 		$response = 'CONFLICT';
 	}
 }
 echo $response;
-file_put_contents('reservations', json_encode($allReservations));
-?>
