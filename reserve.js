@@ -1,5 +1,5 @@
 const moment = require('moment')
-const request = require('request').defaults({ proxy: 'http://127.0.0.1:8888' })
+const request = require('request')
 const fs = require('fs')
 
 /**
