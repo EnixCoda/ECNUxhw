@@ -1,5 +1,5 @@
 <?php
-$reservations = json_decode(file_get_contents('reservations'), true);
+$reservations = json_decode(file_get_contents('reservations.json'), true);
 
 $twoDaysLater = date('Ymd', time() + 2 * 24 * 60 * 60);
 $fourDaysLater = date('Ymd', time() + 4 * 24 * 60 * 60);

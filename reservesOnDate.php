@@ -12,7 +12,7 @@ if (isset($checkInfo->date) && strval(intval($checkInfo->date))) {
 	die();
 }
 
-$reservations = json_decode(file_get_contents('reservations'));
+$reservations = json_decode(file_get_contents('reservations.json'));
 header('Content-type: application/json');
 echo json_encode(array(
 	'date' => $date,

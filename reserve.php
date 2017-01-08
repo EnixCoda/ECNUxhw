@@ -78,7 +78,7 @@ else {
 	}
 }
 
-$allReservations = json_decode(file_get_contents('reservations'), true);
+$allReservations = json_decode(file_get_contents('reservations.json'), true);
 if (!isset($allReservations[$date])) {
 	$allReservations[$date] = [];
 }
@@ -116,7 +116,7 @@ if (count($reservations) === 5) {
 			'roomType'  => $request->roomType
 		));
 		$response = 'SUCCESS';
-		file_put_contents('reservations', json_encode($allReservations));
+		file_put_contents('reservations.json', json_encode($allReservations));
 	} else {
 		$response = 'CONFLICT';
 	}

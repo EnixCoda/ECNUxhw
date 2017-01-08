@@ -237,7 +237,7 @@ def main():
     if len(sys.argv) > 1:
         reservation_file_name = sys.argv[1]
     else:
-        reservation_file_name = 'reservations'
+        reservation_file_name = 'reservations.json'
 
     quests = load_quests(reservation_file_name)
     if len(quests) == 0:
