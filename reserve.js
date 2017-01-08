@@ -123,8 +123,7 @@ const login = (request, rawReservation) => {
 
 const cutTime = (startTime, endTime) => {
   const TIME_BLOCK_UNIT = 30
-  const TIME_LIMIT_RAW = 400
-  const TIME_LIMIT = TIME_LIMIT_RAW / 100 * 60
+  const TIME_LIMIT = 60 * 4
   const times = []
   let reserveTimeLength = endTime - startTime - (Math.floor(endTime / 100) - Math.floor(startTime / 100)) * 40
   let curStartTime = startTime, curEndTime
@@ -140,7 +139,7 @@ const cutTime = (startTime, endTime) => {
       timeBuffer += timeBlock
       reserveTimeLength -= timeBlock
     }
-    curEndTime = curStartTime + parseInt(timeBuffer / 60) * 100 + (timeBuffer % 60)
+    curEndTime = curStartTime + Math.floor(timeBuffer / 60) * 100 + (timeBuffer % 60)
     if (curEndTime % 100 >= 60 || curStartTime % 100 + timeBuffer % 100 === 100) {
       curEndTime += 40
     }
@@ -152,12 +151,12 @@ const cutTime = (startTime, endTime) => {
 
 /**
  * @param {string} date        like '20150101'
- * @param {number} startTime   like 0246
+ * @param {number} startTime   like 246
  * @param {number} endTime     like 1357
  */
 const formatTime = (date, startTime, endTime) => {
-  startTime = '' + startTime
-  endTime = '' + endTime
+  startTime = ('0000' + startTime).substr(-4)
+  endTime = ('0000' + endTime).substr(-4)
   date = [date.substr(0, 4), date.substr(4, 2), date.substr(6, 2)].join('-') // '2015-01-01'
   startTime = [startTime.substr(-4, 2), startTime.substr(-2)].join(':')   // '02:46'
   endTime = [endTime.substr(-4, 2), endTime.substr(-2)].join(':')         // '13:57'
@@ -305,7 +304,7 @@ const main = () => {
         })
       }))
 
-      print('预约信息就绪, 开始倒计时', moment().format())
+      print('预约信息就绪', '开始倒计时', moment().format())
       const timeOffset = 60 * 2 // use second as unit
       const timeToWait = (60 * 60 - moment().minute() * 60 - moment().second() - timeOffset) * 1000
       setTimeout(() => {
