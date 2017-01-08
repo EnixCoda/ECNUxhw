@@ -54,7 +54,7 @@ const extend = (base, patch) => {
 
 const loadRawReservations = () => {
   let reservationFileName
-  if (process.argv.length > 2) reservationFileName = process.argv[1]
+  if (process.argv.length > 2) reservationFileName = process.argv[2]
   else reservationFileName = 'reservations.json'
 
   const DAYS_AHEAD_FOR_MEDIUM = 4
