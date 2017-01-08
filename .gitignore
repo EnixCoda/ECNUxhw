@@ -1,4 +1,5 @@
 .DS_Store
 .vscode
 reservations
+reservations.json
 node_modules

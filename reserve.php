@@ -78,7 +78,7 @@ else {
 	}
 }
 
-$allReservations = json_decode(file_get_contents('reservations.json'), true);
+$allReservations = file_exists('reservations.json') ? json_decode(file_get_contents('reservations.json'), true) : [];
 if (!isset($allReservations[$date])) {
 	$allReservations[$date] = [];
 }

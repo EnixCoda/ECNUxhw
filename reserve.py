@@ -9,6 +9,7 @@ import sys
 import multiprocessing
 import datetime
 import requests
+import os
 
 SKIP_COUNT_DOWN = True
 
@@ -204,6 +205,8 @@ def load_quests(reservation_file_name):
     DAYS_AHEAD_4_MEDIUM = 4
     DAYS_AHEAD_4_SMALL = 2
     quests = []
+    if not os.path.exists(reservation_file_name):
+        return quests
     with open(reservation_file_name, 'r') as reservation_file:
         all_reservations = json.load(reservation_file)
         date4 = (datetime.date.today() + datetime.timedelta(DAYS_AHEAD_4_MEDIUM)).strftime('%Y%m%d')
