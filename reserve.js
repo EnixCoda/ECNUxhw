@@ -33,9 +33,7 @@ const print = function() {
   console.log(Array.prototype.join.call(arguments, ', '))
 }
 
-let count = 0
 const isAfterLimitTime = () => {
-  if (count++ > 5) return true
   let [currentHour, currentMinute] = [moment().hour(), moment().minute()]
   if (currentHour === 0 && currentMinute > 5) {
     print('本次预约已超时', moment().format())
