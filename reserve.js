@@ -316,7 +316,7 @@ const main = () => {
 
 
 process.on('exit', () => {
-  print('program end')
+  print('program end at', moment().format())
 })
 
 main()
