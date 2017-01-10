@@ -15,8 +15,8 @@ const promiseLoopWhile = function(promiseFunc, stopFunc = () => false, minimumEs
     if (stopFunc()) resolve()
     else {
       const start = Date.now()
-      promiseFunc().then(() => {
-        resolve()
+      promiseFunc().then(succeeded => {
+        resolve(succeeded)
       }, () => {
         const end = Date.now()
         const duration = end - start
@@ -106,7 +106,7 @@ const login = (request, rawReservation) => {
           resolve(false)
         } else {
           print(`${rawReservation.stuID} ${parsedResponse.data.name} 登录成功`)
-          resolve()
+          resolve(true)
         }
       } else {
         print(`${rawReservation.stuID}登录失败`)
@@ -302,13 +302,7 @@ const main = () => {
         })
       }))
 
-      print('预约信息就绪', '开始倒计时', moment().format())
-      const timeOffset = 60 * 2 // use second as unit
-      const timeToWait = (60 * 60 - moment().minute() * 60 - moment().second() - timeOffset) * 1000
-      setTimeout(() => {
-        print('倒计时结束', moment().format())
-        reservations.map(reservation => reserve(reservation))
-      }, timeToWait)
+      reservations.map(reservation => reserve(reservation))
     }).catch(error => {
       print(error.message)
     })
