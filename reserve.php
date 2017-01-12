@@ -112,7 +112,7 @@ if (count($reservations) === 5) {
 			'date'      => $request->date,
 			'beginTime' => $request->beginTime,
 			'endTime'   => $request->endTime,
-			'followers' => isset($request->followers) ? $request->followers : [],
+			'followers' => isset($request->followers) ? $request->followers : NULL,
 			'roomType'  => $request->roomType
 		));
 		$response = 'SUCCESS';

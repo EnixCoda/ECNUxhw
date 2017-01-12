@@ -1,6 +1,8 @@
 const moment = require('moment')
-const request = require('request')
+const request = require('request').defaults({ timeout: 3000 })
 const fs = require('fs')
+
+const DEBUG_MODE = !!process.argv.indexOf('debug')
 
 /**
  * run promiseFunc until it resolves
@@ -55,8 +57,8 @@ const loadRawReservations = () => {
   if (process.argv.length > 2) reservationFileName = process.argv[2]
   else reservationFileName = 'reservations.json'
 
-  const DAYS_AHEAD_FOR_MEDIUM = 4
-  const DAYS_AHEAD_FOR_SMALL = 2
+  const DAYS_AHEAD_FOR_MEDIUM = DEBUG_MODE ? 2 : 4
+  const DAYS_AHEAD_FOR_SMALL = DEBUG_MODE ? 0 : 2
   return new Promise((resolve, reject) => {
     fs.readFile(reservationFileName, 'utf-8', (error, data) => {
       if (error) throw error
@@ -247,8 +249,7 @@ const reserve = ([rawReservation, timeBlock, followerStr]) => {
               const responseContent = JSON.parse(rawData)
               if (responseContent['ret'] === 1) {
                 // success
-                print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 成功!`)
-                print(moment().format())
+                print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 成功!`, moment().format())
                 clearInterval(interval)
               } else if (responseContent['msg'].substr(10) === '只能提前[1]天预约') {
                 // do nothing, keep trying
@@ -257,24 +258,23 @@ const reserve = ([rawReservation, timeBlock, followerStr]) => {
               } else {
                 // fail
                 if (responseContent['msg'].substr(-6) === '期间禁止预约') {
-                  print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 失败! 积分不足`)
+                  print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 失败! 积分不足`, moment().format())
                 } else if (responseContent['msg'].substr(10) === '预约与现有预约冲突') {
-                  print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 失败! 与其他预约冲突`)
+                  print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 失败! 与其他预约冲突`, moment().format())
                 } else if (responseContent['msg'].substr(10) === '最少需5人同时使用') {
-                  print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 失败! 存在非法学号`)
+                  print(`预约${rawReservation.room}自${timeBlock.start}至${timeBlock.end} 失败! 存在非法学号`, moment().format())
                 } else if (responseContent['msg'] === '未登录或登录超时，请重新登录。') {
-                  print(`${loginInfo.id} 未登录或登录超时`)
+                  print(`${loginInfo.id} 未登录或登录超时`, moment().format())
                 } else {
-                  print('出现了意外的响应:')
+                  print('出现了意外的响应:', moment().format())
                   print(rawData)
                 }
                 clearInterval(interval)
-                print(moment().format())
               }
             }).on('error', error => {
               print(error.message)
             })
-          }, 2000)
+          }, 3000)
         })
     })
 }
@@ -310,7 +310,7 @@ const main = () => {
 
 
 process.on('exit', () => {
-  print('program end at', moment().format())
+  print(`本次执行完毕，现在是${moment().format()}`)
 })
 
 main()
