@@ -2,7 +2,7 @@ const moment = require('moment')
 const request = require('request').defaults({ timeout: 3000 })
 const fs = require('fs')
 
-const DEBUG_MODE = !!process.argv.indexOf('debug')
+const DEBUG_MODE = process.argv.indexOf('debug') > -1
 
 /**
  * run promiseFunc until it resolves
