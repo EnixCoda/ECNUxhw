@@ -1,5 +1,5 @@
 const moment = require('moment')
-const request = require('request').defaults({ timeout: 3000 })
+const request = require('request').defaults({ timeout: 5000 })
 const fs = require('fs')
 
 const DEBUG_MODE = process.argv.indexOf('debug') > -1
@@ -274,7 +274,7 @@ const reserve = ([rawReservation, timeBlock, followerStr]) => {
             }).on('error', error => {
               print(error.message)
             })
-          }, 3000)
+          }, 5000)
         })
     })
 }
