@@ -49,7 +49,7 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
                 response = session.get(LOGIN_URL, params=login_info, timeout=5)
                 login_response_content = json.loads(response.content)
                 if 'ret' in login_response_content and login_response_content['ret'] == 1:
-                    print '登录成功:', login_response_content['data']['name']
+                    print '登录成功:', login_response_content['data']['name'].encode('utf-8')
                     return True
                 else:
                     print '登录失败:', login_info['id'], login_info['pwd']
@@ -117,19 +117,21 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
                 while True:
                     if response_content['ret'] == 1:
                         print '预约%s自%s至%s成功' % \
-                            (room, time_data['start'], time_data['end'])
+                            (room.encode('utf-8'), time_data['start'].encode('utf-8'), time_data['end'].encode('utf-8'))
                         print_current_time()
                         return
                     if response_content['msg'][10:] == u'预约与现有预约冲突':
                         print '预约%s自%s至%s冲突' % \
-                            (room, time_data['start'], time_data['end'])
+                            (room.encode('utf-8'), time_data['start'].encode('utf-8'), time_data['end'].encode('utf-8'))
                         print_current_time()
                         return
                     if response_content['msg'][10:] == u'最少需5人同时使用':
                         print '预约%s自%s至%s失败, 存在非法的学号' % \
-                            (room, time_data['start'], time_data['end'])
+                            (room.encode('utf-8'), time_data['start'].encode('utf-8'), time_data['end'].encode('utf-8'))
                         print_current_time()
                         return
+                    if response_content['msg'][10:] == u'预约时间不在开放时间内':
+                        break
                     if response_content['msg'][10:] == u'只能提前[1]天预约':
                         break
                     if response_content['msg'][10:] == u'只能提前[3]天预约':
@@ -146,7 +148,7 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
             print room, time_data['start'], time_data['end']
         (_, _, _, new_hour, new_minute, new_second, _, _, _) = time.localtime()
         if new_hour == 0 and new_minute > 2:
-            print '预约%s自%s至%s超时' % (room, time_data['start'], time_data['end'])
+            print '预约%s自%s至%s超时' % (room.encode('utf-8'), time_data['start'].encode('utf-8'), time_data['end'].encode('utf-8'))
             return
         if new_second == last_second:
             time.sleep(1)
@@ -241,8 +243,12 @@ def main():
         print '预约时间分配'
         times_length = len(times)
         for index in range(times_length):
-            print '%s预约%s自%s至%s' % \
-                (quest['stuID'], room, times[index]['start'], times[index]['end'])
+            print '%s预约%s自%s至%s' % (
+                quest['stuID'].encode('utf-8'),
+                room.encode('utf-8'),
+                times[index]['start'].encode('utf-8'),
+                times[index]['end'].encode('utf-8')
+            )
             followers_str = ''
             if 'followers' in quest and quest['followers'] is not None:
                 followers_str = ','.join(quest['followers'])
