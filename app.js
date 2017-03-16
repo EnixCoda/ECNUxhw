@@ -15,6 +15,19 @@ angular.module('ECNUxhw').controller('ECNUxhwCtrl', function($scope, $http, $mdT
     endTime: { hour: undefined, minute: undefined }
   };
 
+  const loadMessage = function () {
+    $http.get('./message.json')
+      .then(response => {
+        $scope.dynamicMsg = response.data.message
+      }, err => {
+        console.log(err)
+      }).catch(excp => {
+        console.log(excp)
+      })
+  }
+
+  loadMessage()
+
   $scope.reservation = reservation;
 
   $scope.roomTypes = [
