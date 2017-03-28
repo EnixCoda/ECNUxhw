@@ -30,8 +30,7 @@ def combine_dicts(dict1, dict2):
     """
     combine two dict objects into a new one
     """
-    combined_dict = dict(dict1.items() + dict2.items())
-    return combined_dict
+    return dict(dict1.items() + dict2.items())
 
 
 def reserve((login_info, room_type, room, time_data, mb_list)):
@@ -52,19 +51,19 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
                     print '登录成功:', login_response_content['data']['name'].encode('utf-8')
                     return True
                 else:
-                    print '登录失败:', login_info['id'], login_info['pwd']
+                    print '登录失败:', login_info['id']
                     print response.content
                     return False
             except Exception, error:
                 print error
-                time.sleep(5)
+                time.sleep(1)
 
     poster = requests.session()
     if not login(poster):
         return
 
     # generate data
-    room_data = {
+    ROOM_DATA = {
         'B411': {'dev_id': '3676491', 'kind_id': '3675179'},
         'B412': {'dev_id': '3676497', 'kind_id': '3675179'},
         'C421': {'dev_id': '3676503', 'kind_id': '3675133'},
@@ -82,7 +81,7 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
         'C414': {'dev_id': '3676656', 'kind_id': '3674969'},
         'C415': {'dev_id': '3676664', 'kind_id': '3674969'}
     }
-    reserve_data = {
+    reserve_form = {
         'lab_id': '3674920',
         'type': 'dev',
         'prop': '',
@@ -100,18 +99,18 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
             'min_user': '5',
             'max_user': '10'
         }
-        reserve_data = combine_dicts(reserve_data, medium_room_additional_data)
-    reserve_data = combine_dicts(reserve_data, time_data)
-    reserve_data = combine_dicts(reserve_data, room_data[room])
+        reserve_form = combine_dicts(reserve_form, medium_room_additional_data)
+    reserve_form = combine_dicts(reserve_form, time_data)
+    reserve_form = combine_dicts(reserve_form, ROOM_DATA[room])
 
-    # ready至go
+    # ready to go
     RESERVE_URL = 'http://202.120.82.2:8081/ClientWeb/pro/ajax/reserve.aspx'
     (_, _, _, _, _, last_second, _, _, _) = time.localtime()
     while True:
         try:
             time_seed = str(int(time.time())) + str(random.randint(100, 199))
-            reserve_data['_'] = time_seed
-            response_content = poster.get(RESERVE_URL, params=reserve_data, timeout=5).content
+            reserve_form['_'] = time_seed
+            response_content = poster.get(RESERVE_URL, params=reserve_form, timeout=5).content
             response_content = json.loads(response_content)
             if 'ret' in response_content:
                 while True:
@@ -201,8 +200,8 @@ def time_cutter(date, start_time, end_time):
 
 def load_quests(reservation_file_name):
     """ load quests from file reservation_file_name"""
-    DAYS_AHEAD_4_MEDIUM = 4
-    DAYS_AHEAD_4_SMALL = 2
+    DAYS_AHEAD_4_MEDIUM = 3
+    DAYS_AHEAD_4_SMALL = 1
     quests = []
     if not os.path.exists(reservation_file_name):
         return quests
