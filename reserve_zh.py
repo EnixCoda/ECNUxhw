@@ -131,6 +131,8 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
                         return
                     if response_content['msg'][10:] == u'预约时间不在开放时间内':
                         break
+                    if response_content['msg'][10:] == u'要到[21:00]方可预约':
+                        break
                     if response_content['msg'][10:] == u'只能提前[1]天预约':
                         break
                     if response_content['msg'][10:] == u'只能提前[3]天预约':
