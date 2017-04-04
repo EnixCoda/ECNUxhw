@@ -148,7 +148,7 @@ def reserve((login_info, room_type, room, time_data, mb_list)):
             print error
             print room, time_data['start'], time_data['end']
         (_, _, _, new_hour, new_minute, new_second, _, _, _) = time.localtime()
-        if new_hour == 0 and new_minute > 2:
+        if new_hour == 21 and new_minute > 5:
             print '预约%s自%s至%s超时' % (room.encode('utf-8'), time_data['start'].encode('utf-8'), time_data['end'].encode('utf-8'))
             return
         if new_second == last_second:
