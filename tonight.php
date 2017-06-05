@@ -15,4 +15,3 @@ if (isset($reservations[$fourDaysLater])) {
 
 header('Content-type: application/json');
 echo json_encode($push, JSON_PRETTY_PRINT);
-?>
